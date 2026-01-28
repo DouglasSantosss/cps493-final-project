@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | Doug Santos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Doug Santos</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+    </nav>
+
+    <main class="page-content">
+        <section class="contact-section">
+            <h1>Get In Touch</h1>
+            <p class="section-intro">I'm always open to discussing new opportunities, projects, or just having a conversation about technology.</p>
+
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h2>Contact Information</h2>
+                    
+                    <div class="contact-item">
+                        <span class="contact-icon">📧</span>
+                        <div>
+                            <h3>Email</h3>
+                            <a href="mailto:santosd10@newpaltz.edu">santosd10@newpaltz.edu</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <span class="contact-icon">💼</span>
+                        <div>
+                            <h3>GitHub</h3>
+                            <a href="https://github.com/DouglasSantosss" target="_blank">github.com/DouglasSantosss</a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <span class="contact-icon">📍</span>
+                        <div>
+                            <h3>Location</h3>
+                            <p>New Paltz, NY</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form-container">
+                    <h2>Send a Message</h2>
+                    <form id="contact-form" class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                    <div id="form-status" class="form-status"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Doug Santos. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://github.com/DouglasSantosss" target="_blank">GitHub</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
