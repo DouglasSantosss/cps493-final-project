@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Example</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #c8f7c5;
+        }
+
+        .menu {
+            background-color: #2e7d32;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            display: flex;
+        }
+
+        .menu > li {
+            position: relative;
+        }
+
+        .menu > li > a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            display: block;
+            font-weight: bold;
+        }
+
+        .menu > li:hover > a {
+            background-color: #1b5e20;
+        }
+
+        .menu > li > ul {
+            display: none;
+            position: absolute;
+            background-color: white;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            min-width: 140px;
+            
+        }
+
+        .menu > li:hover > ul {
+            display: block;
+        }
+
+        .menu > li > ul > li > a {
+            color: black;
+            padding: 10px 20px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .menu > li > ul > li > a:hover {
+            background-color: #e0e0e0;
+        }
+
+        
+        .edit > a {
+            font-weight: normal;
+        }
+
+       
+        .edit:focus-within > ul {
+            display: block;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .box {
+            background-color: #ffffcc;
+            
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            max-width: 900px;
+        }
+
+        .box h3 {
+            margin-top: 0;
+        }
+
+        .box p {
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<ul class="menu">
+    <li>
+        <a href="#">File</a>
+        <ul>
+            <li><a href="#">New</a></li>
+            <li><a href="#">Open</a></li>
+            <li><a href="#">Save</a></li>
+            <li><a href="#">Print</a></li>
+            <li><a href="#">Close</a></li>
+        </ul>
+    </li>
+   <li>
+        <a href="#">Edit</a>
+        <ul>
+            <li><a href="#">Undo</a></li>
+            <li><a href="#">Redo</a></li>
+            <li><a href="#">Cut</a></li>
+            <li><a href="#">Copy</a></li>
+            <li><a href="#">Paste</a></li>
+            <li><a href="#">Delete</a></li>
+            <li><a href="#">Select All</a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="#">View</a>
+        <ul>
+            <li><a href="#">Zoom In</a></li>
+            <li><a href="#">Zoom Out</a></li>
+            <li><a href="#">Actual Size</a></li>
+            <li><a href="#">Fit Page</a></li>
+            <li><a href="#">Fit Width</a></li>
+            <li><a href="#">Fit Height</a></li>
+            <li><a href="#">Rotate Left</a></li>
+            <li><a href="#">Rotate Right</a></li>
+            <li><a href="#">Full Screen</a></li>
+        </ul>
+    </li>
+</ul>
+
+<div class="content">
+    <div class="box">
+        <h3>Instructions</h3>
+        <p>Recreate this page using <b><i>only CSS</i></b>. Do yourself a favor and 1) Do not view the source. Figure it out yourself. 2) Do not search for the solution. Learn CSS until you know enough to do this.</p>
+    </div>
+
+    <div class="box">
+        <h3>Extra Credit</h3>
+        <p>Notice how the Edit menu (besides for not being bold) reacts to clicks. If you click the edit menu, it remains open until you click somewhere else. (This you might need to search for)</p>
+    </div>
+</div>
+
+</body>
+</html>
