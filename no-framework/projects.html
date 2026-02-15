@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | Doug Santos</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .github-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .github-header a {
+            display: inline-block;
+            padding: 10px 25px;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        .github-header a:hover {
+            background-color: #555;
+        }
+
+        .category {
+            margin-bottom: 40px;
+        }
+
+        .category h2 {
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .project-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .project-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .project-card h3 a {
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        .project-card h3 a:hover {
+            color: #2563eb;
+        }
+
+        .project-card p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .project-card .language {
+            display: inline-block;
+            padding: 3px 10px;
+            background-color: #e2e8f0;
+            border-radius: 15px;
+            font-size: 12px;
+            color: #475569;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Doug Santos</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="projects.html" class="active">Projects</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main class="page-content">
+        <div class="github-header">
+            <h1>My Projects</h1>
+            <p>Check out my work on GitHub</p>
+            <a href="https://github.com/DouglasSantosss" target="_blank">View GitHub Profile</a>
+        </div>
+
+        <div id="projects-container">
+            <div class="loading">Loading projects from GitHub...</div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Doug Santos. All rights reserved.</p>
+    </footer>
+
+    <script>
+        async function fetchGitHubRepos() {
+            const container = document.getElementById('projects-container');
+            
+            try {
+                const response = await fetch('https://api.github.com/users/DouglasSantosss/repos?sort=updated&per_page=30');
+                const repos = await response.json();
+
+                if (repos.length === 0) {
+                    container.innerHTML = '<p>No repositories found.</p>';
+                    return;
+                }
+
+                const categories = {
+                    'Web Development': [],
+                    'Cybersecurity': [],
+                    'Class Work': [],
+                    'Other Projects': []
+                };
+
+                repos.forEach(repo => {
+                    const name = repo.name.toLowerCase();
+                    const desc = (repo.description || '').toLowerCase();
+
+                    if (name.includes('cps493') || name.includes('classwork') || name.includes('class')) {
+                        categories['Class Work'].push(repo);
+                    } else if (name.includes('security') || name.includes('cyber') || desc.includes('security')) {
+                        categories['Cybersecurity'].push(repo);
+                    } else if (name.includes('web') || repo.language === 'HTML' || repo.language === 'JavaScript' || repo.language === 'CSS') {
+                        categories['Web Development'].push(repo);
+                    } else {
+                        categories['Other Projects'].push(repo);
+                    }
+                });
+
+                let html = '';
+
+                for (const [category, repoList] of Object.entries(categories)) {
+                    if (repoList.length > 0) {
+                        html += `
+                            <div class="category">
+                                <h2>${category}</h2>
+                                <div class="projects-grid">
+                                    ${repoList.map(repo => `
+                                        <div class="project-card">
+                                            <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
+                                            <p>${repo.description || 'No description'}</p>
+                                            ${repo.language ? `<span class="language">${repo.language}</span>` : ''}
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                container.innerHTML = html;
+
+            } catch (error) {
+                container.innerHTML = '<p>Could not load projects. <a href="https://github.com/DouglasSantosss" target="_blank">View on GitHub</a></p>';
+            }
+        }
+
+        fetchGitHubRepos();
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
