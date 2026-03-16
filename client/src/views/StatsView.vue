@@ -69,7 +69,7 @@ const weeklyData = computed(() => {
 const maxWeekCount = computed(() => Math.max(...weeklyData.value.map((w) => w.count), 1))
 
 const maxTypeCount = computed(() =>
-  typeCounts.value.length > 0 ? typeCounts.value[0][1] : 1,
+  typeCounts.value[0]?.[1] ?? 1,
 )
 </script>
 

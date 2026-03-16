@@ -150,7 +150,7 @@ export const useActivitiesStore = defineStore('activities', () => {
   function updateActivity(id: number, data: Partial<Omit<Activity, 'id'>>) {
     const idx = activities.value.findIndex((a) => a.id === id)
     if (idx !== -1) {
-      activities.value[idx] = { ...activities.value[idx], ...data }
+      activities.value[idx] = { ...activities.value[idx], ...data } as Activity
     }
   }
 

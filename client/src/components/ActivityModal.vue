@@ -23,7 +23,7 @@ const activityTypes: ActivityType[] = [
   'Other',
 ]
 
-const today = new Date().toISOString().split('T')[0]
+const today = new Date().toISOString().split('T')[0] ?? ''
 
 const form = ref({
   type: 'Running' as ActivityType,
