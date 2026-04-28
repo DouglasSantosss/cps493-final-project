@@ -2,18 +2,18 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { useUsersStore } from '../stores/users'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const usersStore = useUsersStore()
 
-const selectedUserId = ref<number | null>(null)
+const email = ref('')
+const password = ref('')
 
-function handleLogin() {
-  if (selectedUserId.value === null) return
-  authStore.loginAs(selectedUserId.value)
-  router.push('/')
+async function handleLogin() {
+  const success = await authStore.login(email.value, password.value)
+  if (success) {
+    router.push('/')
+  }
 }
 </script>
 
@@ -26,30 +26,45 @@ function handleLogin() {
             <span class="icon has-text-info"><i class="fas fa-dumbbell"></i></span>
             FitTrack
           </h1>
-          <p class="subtitle has-text-centered">Select a user to log in</p>
+          <p class="subtitle has-text-centered">Log in to continue</p>
 
-          <div class="field">
-            <label class="label">User</label>
-            <div class="control">
-              <div class="select is-fullwidth">
-                <select v-model="selectedUserId">
-                  <option :value="null" disabled>-- Pick a user --</option>
-                  <option v-for="user in usersStore.users" :key="user.id" :value="user.id">
-                    {{ user.name }} ({{ user.role }})
-                  </option>
-                </select>
+          <form @submit.prevent="handleLogin">
+            <div class="field">
+              <label class="label">Email</label>
+              <div class="control">
+                <input class="input" type="email" v-model="email" placeholder="email@example.com" required />
               </div>
             </div>
-          </div>
 
-          <div class="field mt-4">
-            <button
-              class="button is-info is-fullwidth"
-              @click="handleLogin"
-              :disabled="selectedUserId === null"
-            >
-              Log In
-            </button>
+            <div class="field">
+              <label class="label">Password</label>
+              <div class="control">
+                <input class="input" type="password" v-model="password" placeholder="Password" required />
+              </div>
+            </div>
+
+            <div v-if="authStore.error" class="notification is-danger is-light">
+              {{ authStore.error }}
+            </div>
+
+            <div class="field mt-4">
+              <button
+                class="button is-info is-fullwidth"
+                type="submit"
+                :class="{ 'is-loading': authStore.loading }"
+                :disabled="authStore.loading"
+              >
+                Log In
+              </button>
+            </div>
+          </form>
+
+          <hr />
+          <div class="content is-small">
+            <p><strong>Demo Accounts:</strong></p>
+            <p>Admin: admin@fit.com / admin123</p>
+            <p>User: alice@fit.com / alice123</p>
+            <p>User: bob@fit.com / bob123</p>
           </div>
         </div>
       </div>

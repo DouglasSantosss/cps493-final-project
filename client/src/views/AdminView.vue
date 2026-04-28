@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useUsersStore } from '../stores/users'
 import { useAuthStore } from '../stores/auth'
-import type { User } from '../types'
+import type { User } from '../../../server/types'
 import UserModal from '../components/UserModal.vue'
 
 const usersStore = useUsersStore()
 const authStore = useAuthStore()
+
+onMounted(async () => {
+  await usersStore.loadAll()
+})
 
 const showModal = ref(false)
 const editingUser = ref<User | null>(null)
@@ -21,21 +25,21 @@ function openEdit(user: User) {
   showModal.value = true
 }
 
-function handleDelete(id: number) {
+async function handleDelete(id: number) {
   if (id === authStore.currentUser?.id) {
     alert("You can't delete your own account!")
     return
   }
   if (confirm('Are you sure you want to delete this user?')) {
-    usersStore.deleteUser(id)
+    await usersStore.deleteUser(id)
   }
 }
 
-function handleSave(data: Omit<User, 'id'>) {
+async function handleSave(data: Omit<User, 'id'>) {
   if (editingUser.value) {
-    usersStore.updateUser(editingUser.value.id, data)
+    await usersStore.updateUser(editingUser.value.id, data)
   } else {
-    usersStore.addUser(data)
+    await usersStore.addUser(data)
   }
   showModal.value = false
 }
@@ -85,18 +89,11 @@ function getFriendNames(friendIds: number[]) {
               <td>{{ user.id }}</td>
               <td>
                 {{ user.name }}
-                <span v-if="user.id === authStore.currentUser?.id" class="tag is-warning is-light ml-1">
-                  you
-                </span>
+                <span v-if="user.id === authStore.currentUser?.id" class="tag is-warning is-light ml-1">you</span>
               </td>
               <td>{{ user.email }}</td>
               <td>
-                <span
-                  class="tag"
-                  :class="user.role === 'admin' ? 'is-danger' : 'is-info'"
-                >
-                  {{ user.role }}
-                </span>
+                <span class="tag" :class="user.role === 'admin' ? 'is-danger' : 'is-info'">{{ user.role }}</span>
               </td>
               <td class="is-size-7">{{ getFriendNames(user.friendIds) }}</td>
               <td>
@@ -104,11 +101,7 @@ function getFriendNames(friendIds: number[]) {
                   <button class="button is-small is-warning is-light" @click="openEdit(user)">
                     <span class="icon"><i class="fas fa-edit"></i></span>
                   </button>
-                  <button
-                    class="button is-small is-danger is-light"
-                    @click="handleDelete(user.id)"
-                    :disabled="user.id === authStore.currentUser?.id"
-                  >
+                  <button class="button is-small is-danger is-light" @click="handleDelete(user.id)" :disabled="user.id === authStore.currentUser?.id">
                     <span class="icon"><i class="fas fa-trash"></i></span>
                   </button>
                 </div>
@@ -118,12 +111,7 @@ function getFriendNames(friendIds: number[]) {
         </table>
       </div>
 
-      <UserModal
-        :show="showModal"
-        :user="editingUser"
-        @close="showModal = false"
-        @save="handleSave"
-      />
+      <UserModal :show="showModal" :user="editingUser" @close="showModal = false" @save="handleSave" />
     </div>
   </section>
 </template>

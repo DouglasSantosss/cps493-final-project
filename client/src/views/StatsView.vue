@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useActivitiesStore } from '../stores/activities'
 
 const authStore = useAuthStore()
 const activitiesStore = useActivitiesStore()
 
+onMounted(async () => {
+  await activitiesStore.loadMyActivities()
+})
 const myActivities = computed(() => {
   if (!authStore.currentUser) return []
   return activitiesStore.getByUser(authStore.currentUser.id)

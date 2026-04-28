@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useActivitiesStore } from '../stores/activities'
-import type { Activity } from '../types'
+import type { Activity } from '../../../server/types'
 import ActivityModal from '../components/ActivityModal.vue'
 
 const authStore = useAuthStore()
 const activitiesStore = useActivitiesStore()
+
+onMounted(async () => {
+  await activitiesStore.loadMyActivities()
+})
 
 const myActivities = computed(() => {
   if (!authStore.currentUser) return []
@@ -28,19 +32,19 @@ function openEdit(activity: Activity) {
   showModal.value = true
 }
 
-function handleDelete(id: number) {
+async function handleDelete(id: number) {
   if (confirm('Are you sure you want to delete this activity?')) {
-    activitiesStore.deleteActivity(id)
+    await activitiesStore.deleteActivity(id)
   }
 }
 
-function handleSave(data: Omit<Activity, 'id' | 'userId'>) {
+async function handleSave(data: Omit<Activity, 'id' | 'userId'>) {
   if (!authStore.currentUser) return
 
   if (editingActivity.value) {
-    activitiesStore.updateActivity(editingActivity.value.id, data)
+    await activitiesStore.updateActivity(editingActivity.value.id, data)
   } else {
-    activitiesStore.addActivity({ ...data, userId: authStore.currentUser.id })
+    await activitiesStore.addActivity({ ...data, userId: authStore.currentUser.id })
   }
 
   showModal.value = false
@@ -113,10 +117,7 @@ function activityIcon(type: string) {
                   <button class="button is-small is-warning is-light" @click="openEdit(activity)">
                     <span class="icon"><i class="fas fa-edit"></i></span>
                   </button>
-                  <button
-                    class="button is-small is-danger is-light"
-                    @click="handleDelete(activity.id)"
-                  >
+                  <button class="button is-small is-danger is-light" @click="handleDelete(activity.id)">
                     <span class="icon"><i class="fas fa-trash"></i></span>
                   </button>
                 </div>

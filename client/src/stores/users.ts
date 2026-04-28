@@ -1,58 +1,31 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { User } from '../types'
-
-const initialUsers: User[] = [
-  {
-    id: 1,
-    name: 'Admin User',
-    email: 'admin@fit.com',
-    password: 'admin123',
-    role: 'admin',
-    friendIds: [2, 3],
-  },
-  {
-    id: 2,
-    name: 'Alice Brown',
-    email: 'alice@fit.com',
-    password: 'alice123',
-    role: 'user',
-    friendIds: [3, 4],
-  },
-  {
-    id: 3,
-    name: 'Bob Smith',
-    email: 'bob@fit.com',
-    password: 'bob123',
-    role: 'user',
-    friendIds: [2, 4],
-  },
-  {
-    id: 4,
-    name: 'Carol Davis',
-    email: 'carol@fit.com',
-    password: 'carol123',
-    role: 'user',
-    friendIds: [2, 3],
-  },
-]
+import type { User, DataEnvelope, DataListEnvelope } from '../../../server/types'
+import { api } from '../services/myfetch'
 
 export const useUsersStore = defineStore('users', () => {
-  const users = ref<User[]>(initialUsers)
+  const users = ref<User[]>([])
 
-  function addUser(data: Omit<User, 'id'>) {
-    const newId = users.value.length > 0 ? Math.max(...users.value.map((u) => u.id)) + 1 : 1
-    users.value.push({ ...data, id: newId })
+  async function loadAll() {
+    const response = await api<DataListEnvelope<User>>('users')
+    users.value = response.data
   }
 
-  function updateUser(id: number, data: Partial<Omit<User, 'id'>>) {
+  async function addUser(data: Omit<User, 'id'>) {
+    const response = await api<DataEnvelope<User>>('users/create', data)
+    users.value.push(response.data)
+  }
+
+  async function updateUser(id: number, data: Partial<Omit<User, 'id'>>) {
+    const response = await api<DataEnvelope<User>>(`users/${id}`, data, { method: 'PATCH' })
     const idx = users.value.findIndex((u) => u.id === id)
     if (idx !== -1) {
-      users.value[idx] = { ...users.value[idx], ...data } as User
+      users.value[idx] = response.data
     }
   }
 
-  function deleteUser(id: number) {
+  async function deleteUser(id: number) {
+    await api<DataEnvelope<User>>(`users/${id}`, undefined, { method: 'DELETE' })
     users.value = users.value.filter((u) => u.id !== id)
   }
 
@@ -60,5 +33,5 @@ export const useUsersStore = defineStore('users', () => {
     return users.value.find((u) => u.id === id)
   }
 
-  return { users, addUser, updateUser, deleteUser, getUserById }
+  return { users, loadAll, addUser, updateUser, deleteUser, getUserById }
 })

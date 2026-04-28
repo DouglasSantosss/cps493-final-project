@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useUsersStore } from '../stores/users'
 import { useActivitiesStore } from '../stores/activities'
-import type { User } from '../types'
+import type { User } from '../../../server/types'
 
 const authStore = useAuthStore()
 const usersStore = useUsersStore()
 const activitiesStore = useActivitiesStore()
+
+onMounted(async () => {
+  if (authStore.isAdmin) {
+    await usersStore.loadAll()
+  }
+  await activitiesStore.loadFriendsActivities()
+})
 
 const friends = computed(() => {
   if (!authStore.currentUser) return []
@@ -64,11 +71,7 @@ function activityIcon(type: string) {
             </div>
 
             <div v-else>
-              <div
-                class="media mb-3"
-                v-for="friend in friends"
-                :key="friend.id"
-              >
+              <div class="media mb-3" v-for="friend in friends" :key="friend.id">
                 <div class="media-left">
                   <span class="icon has-text-info">
                     <i class="fas fa-user-circle fa-lg"></i>
@@ -77,10 +80,7 @@ function activityIcon(type: string) {
                 <div class="media-content">
                   <p class="has-text-weight-semibold">{{ friend.name }}</p>
                   <p class="is-size-7 has-text-grey">{{ friend.email }}</p>
-                  <span
-                    class="tag is-small"
-                    :class="friend.role === 'admin' ? 'is-danger' : 'is-info'"
-                  >
+                  <span class="tag is-small" :class="friend.role === 'admin' ? 'is-danger' : 'is-info'">
                     {{ friend.role }}
                   </span>
                 </div>
