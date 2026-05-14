@@ -40,7 +40,7 @@ export async function create(typeData: Omit<ExerciseType, "id">) {
             category: typeData.category,
             calories_per_minute: typeData.caloriesPerMinute,
             icon: typeData.icon,
-        })
+        } as any)
         .select()
         .single()
     if (error) throw { status: 500, message: error.message }

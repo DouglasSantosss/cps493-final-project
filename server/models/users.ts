@@ -45,7 +45,7 @@ export async function create(userData: Omit<User, "id">) {
             password: hashedPassword,
             role: userData.role || "user",
             friend_ids: userData.friendIds || [],
-        })
+        } as any)
         .select()
         .single()
     if (error) throw { status: 500, message: error.message }

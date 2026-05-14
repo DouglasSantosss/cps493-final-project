@@ -55,7 +55,7 @@ export async function getByUserIds(userIds: number[]) {
 }
 
 export async function create(activity: Omit<Activity, "id">) {
-    const { data, error } = await getDb().from("activities").insert(toRow(activity)).select().single()
+    const { data, error } = await getDb().from("activities").insert(toRow(activity) as any).select().single()
     if (error) throw { status: 500, message: error.message }
     return toActivity(data)
 }
@@ -78,3 +78,27 @@ export async function removeByUserId(userId: number) {
     if (error) throw { status: 500, message: error.message }
     return (data || []).length
 }
+
+
+export async function getByUserIdPaginated(userId: number, page: number, pageSize: number) {
+    const offset = (page - 1) * pageSize
+
+    const { count, error: countError } = await getDb()
+        .from("activities")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", userId)
+
+    if (countError) throw { status: 500, message: countError.message }
+
+    const { data, error } = await getDb()
+        .from("activities")
+        .select("*")
+        .eq("user_id", userId)
+        .order("date", { ascending: false })
+        .range(offset, offset + pageSize - 1)
+
+    if (error) throw { status: 500, message: error.message }
+    const list = (data || []).map(toActivity)
+    return { list, total: count || 0, page, pageSize }
+}
+

@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { getAll, get, getByUserId, getByUserIds, create, update, remove } from "../models/activities"
+import { getAll, get, getByUserId, getByUserIdPaginated, getByUserIds, create, update, remove } from "../models/activities"
 import { get as getUser } from "../models/users"
 import { Activity, DataEnvelope, DataListEnvelope } from "../types"
 import { verifyToken, requireAdmin } from "../middleware/auth"
@@ -26,6 +26,23 @@ app.get("/", verifyToken, requireAdmin, async (_req, res, next) => {
                 data: list,
                 isSuccess: true,
                 total: count,
+            }
+            res.send(response)
+        } catch (err) {
+            next(err)
+        }
+    })
+    .get("/me/page", verifyToken, async (req, res, next) => {
+        try {
+            const page = Number(req.query.page) || 1
+            const pageSize = Number(req.query.pageSize) || 20
+            const result = await getByUserIdPaginated(req.user!.id, page, pageSize)
+            const response = {
+                data: result.list,
+                isSuccess: true,
+                total: result.total,
+                page: result.page,
+                pageSize: result.pageSize,
             }
             res.send(response)
         } catch (err) {
